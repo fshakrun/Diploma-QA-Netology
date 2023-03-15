@@ -12,7 +12,7 @@
 
 1. [План автоматизации тестирования веб-сервиса для покупки тура](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Plan.md)
 2. [Отчётные документы по итогам тестирования](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Report.md)
-2. Отчётные документы по итогам автоматизации
+2. [Отчётные документы по итогам автоматизации](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Summary.md)
 
 
 ### Предусловия и окружение:
