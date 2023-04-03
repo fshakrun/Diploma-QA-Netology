@@ -6,17 +6,23 @@ import com.codeborne.selenide.SelenideElement;
 import ru.netology.data.DataMaker;
 
 
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class BookingPage {
+
+    MainPage mainPage = new MainPage();
     //Находим кнопку "Купить":
-    private final SelenideElement buyButton = $(byText("Купить"));
-    private final SelenideElement buyHeading = $(byText("Оплата по карте"));
-    //Находим кнопку "Купить в кредит":
-    private final SelenideElement creditButton = $(byText("Купить в кредит"));
-    private final SelenideElement creditHeading = $(byText("Кредит по данным карты"));
+//    private final SelenideElement buyButton = $(byText("Купить"));
+//    private final SelenideElement buyHeading = $(byText("Оплата по карте"));
+//    //Находим кнопку "Купить в кредит":
+//    private final SelenideElement creditButton = $(byText("Купить в кредит"));
+//    private final SelenideElement creditHeading = $(byText("Кредит по данным карты"));
+
     //Форма оплаты, поля формы, возможные ошибки, кнопка "Продолжить":
     private final SelenideElement cardNumberField = $("input[placeholder='0000 0000 0000 0000']");
     private final SelenideElement cardNumberFieldError = $x("//*[text()='Номер карты']/..//*[@class='input__sub']");
@@ -32,16 +38,23 @@ public class BookingPage {
     private final SelenideElement notificationError = $(".notification_status_error");
     private final SelenideElement continueButton = $("form button");
 
+    private final SelenideElement improperFormat =  $(byText("Неверный формат"));
+    private final SelenideElement emptyField =  $(byText("Поле обязательно для заполнения"));
+    private final SelenideElement invalidExpiredDate =  $(byText("Неверно указан срок действия карты"));
+    private final SelenideElement expiredDatePass =  $(byText("Истёк срок действия карты"));
+//    private final SelenideElement successNote =  $(byText("Операция одобрена Банком."));
+//    private final SelenideElement failureNote =  $(byText("Ошибка! Банк отказал в проведении операции."));
+
+
     public void cardPayment() {
-        buyButton.click();
-        buyHeading.shouldBe(Condition.visible);
+        mainPage.buyButton.click();
+        mainPage.buyHeading.shouldBe(visible);
     }
 
     public void cardCredit() {
-        creditButton.click();
-        creditHeading.shouldBe(Condition.visible);
+        mainPage.creditButton.click();
+        mainPage.creditHeading.shouldBe(visible);
     }
-
     public void voidForm() {
         continueButton.click();
         cardNumberFieldError.shouldBe(Condition.visible);
@@ -200,11 +213,12 @@ public class BookingPage {
         continueButton.click();
     }
 
+    //Время ожидания ответа 15 секунд.
     public void bankApproved() {
-        notificationSuccessfully.shouldBe(Condition.visible);
+        notificationSuccessfully.shouldBe(visible,Duration.ofSeconds(15));
     }
 
     public void bankDeclined() {
-        notificationError.shouldBe(Condition.visible);
+        notificationError.shouldBe(visible, Duration.ofSeconds(15));
     }
 }

@@ -35,9 +35,9 @@
 
 5. В терминале IntelliJ IDEA выполнить команду для запуска автотестов, в зависимости от предпочитаемой СУБД:
 
-**MySQL:** ```.\gradlew clean test -D dbUrl=jdbc:mysql://localhost:3306/app -D dbUser=postgres -D dbPass=630287```
+**MySQL:** ```.\gradlew clean test -DdbUrl=jdbc:mysql://localhost:3306/app -DdbUser=postgres -DdbPass=630287```
 
-**Postgres:** ```.\gradlew clean test -D dbUrl=jdbc:postgresql://localhost:5432/app -D dbUser=postgres -D dbPass=630287```
+**Postgres:** ```.\gradlew clean test -DdbUrl=jdbc:postgresql://localhost:5432/app -DdbUser=postgres -DdbPass=630287```
 
 
 6. В терминале IntelliJ IDEA для получения отчета Allure выполнить команду: ```.\gradlew allureServe```

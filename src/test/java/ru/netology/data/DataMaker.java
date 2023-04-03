@@ -15,33 +15,36 @@ public class DataMaker {
     private DataMaker() {
     }
 
-    private static String getIncompleteCardNumber() {
+    public static String getIncompleteCardNumber() {
         //Номер карты без одной цифры:
         return validCard.substring(0, 18);
+            }
+
+    public static String getValidCardNumber() {
+        //Номер карты без одной цифры:
+        return validCard;
     }
-
-
-    private static String getZeroMonthValue() {
+    public static String getZeroMonthValue() {
         return "00";
     }
 
-    private static String getThirteenMonthValue() {
+    public static String getThirteenMonthValue() {
         return "13";
     }
 
-    private static String getValidMonth() {
+    public static String getValidMonth() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
     }
 
-    private static String getPastYear() {    //Прошлый год:
+    public static String getPastYear() {    //Прошлый год:
         return LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("yy"));
     }
 
-    private static String getTenYears() {    //Текущий год + 10 лет:
+    public static String getTenYears() {    //Текущий год + 10 лет:
         return LocalDate.now().plusYears(10).format(DateTimeFormatter.ofPattern("yy"));
     }
 
-    private static String getValidYear() {
+    public static String getValidYear() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yy"));
     }
 
@@ -62,12 +65,24 @@ public class DataMaker {
         return fistNumber + secondNumber;
     }
 
-    private static String getOwner() {
+    public static String getOwner() {
         Faker faker = new Faker();
         return faker.name().fullName();
     }
 
-    private static String getCVC() {
+    public static String getOwnerNameDigits() {
+        return "12223232323232";
+    }
+
+    public static String getOwnerNameSymbols() {
+        return "***%%%@@";
+    }
+
+    public static String getIncompleteCvc() {
+        return "11";
+    }
+
+    public static String getCVC() {
         Random random = new Random();
         var firstNumber = numbers[random.nextInt(10)];
         var secondNumber = getNumbers();
@@ -118,10 +133,10 @@ public class DataMaker {
 
     @Value
     public static class CardInfo {
-        private String numberCard;
-        private String month;
-        private String year;
-        private String owner;
-        private String cvc;
+        String numberCard;
+        String month;
+        String year;
+        String owner;
+        String cvc;
     }
 }
