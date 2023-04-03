@@ -10,8 +10,9 @@
 
 ### Документация по дипломной работе включает в себя:
 
-1. План автоматизации тестирования веб-сервиса для покупки тура
-2. Отчет по итогам прогона автоматизированных тестов
+1. [План автоматизации тестирования веб-сервиса для покупки тура](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Plan.md)
+2. [Отчётные документы по итогам тестирования](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Report.md)
+2. [Отчётные документы по итогам автоматизации](https://github.com/fshakrun/Diploma-QA-Netology/blob/main/Summary.md)
 
 
 ### Предусловия и окружение:
