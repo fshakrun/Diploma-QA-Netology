@@ -18,6 +18,7 @@ public class DataHelper {
         runner = new QueryRunner();
         connection = DriverManager.getConnection(System.getProperty("datasource"), "postgres", "630287");
     }
+
     @SneakyThrows
     public static void databaseCleanUp() {
         start();

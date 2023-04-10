@@ -18,19 +18,20 @@ public class DataMaker {
     public static String getIncompleteCardNumber() {
         //Номер карты без одной цифры:
         return validCard.substring(0, 18);
-            }
+    }
 
-    public static String getValidCardNumber() {
-        //Номер карты без одной цифры:
-        return validCard;
+    public static CardInfo getEmptyCardInfo() {
+        return new CardInfo(" ", " ", " ", " ", " ");
+    }
+
+    public static CardInfo getEmptyCardNumber() {
+        return new CardInfo(" ", getValidMonth(), getValidYear(), getOwner(), getCVC());
     }
     public static String getZeroMonthValue() {
         return "00";
     }
 
-    public static String getThirteenMonthValue() {
-        return "13";
-    }
+    public static String getThirteenMonthValue() {return "13";}
 
     public static String getValidMonth() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
@@ -70,18 +71,6 @@ public class DataMaker {
         return faker.name().fullName();
     }
 
-    public static String getOwnerNameDigits() {
-        return "12223232323232";
-    }
-
-    public static String getOwnerNameSymbols() {
-        return "***%%%@@";
-    }
-
-    public static String getIncompleteCvc() {
-        return "11";
-    }
-
     public static String getCVC() {
         Random random = new Random();
         var firstNumber = numbers[random.nextInt(10)];
@@ -91,9 +80,8 @@ public class DataMaker {
     }
 
     public static CardInfo getApprovedCard() {
-        return new CardInfo(validCard, getValidMonth(), getValidYear(), getOwner(), getCVC());
+        return new CardInfo(validCard, getValidMonth(), getValidYear(),"Petr Petrov", getCVC());
     }
-
     public static CardInfo getDeclinedCard() {
         return new CardInfo(invalidCard, getValidMonth(), getValidYear(), getOwner(), getCVC());
     }
@@ -101,7 +89,16 @@ public class DataMaker {
     public static CardInfo getCardWithIncompleteCardNumber() {
         return new CardInfo(getIncompleteCardNumber(), getValidMonth(), getValidYear(), getOwner(), getCVC());
     }
+    public static CardInfo getCardWithEmptyMonthValue() {
+        return new CardInfo(validCard, null, getValidYear(), getOwner(), getCVC());
+    }
 
+    public static CardInfo getCardWithEmptyYearValue() {
+        return new CardInfo(validCard, getValidMonth(), null, getOwner(), getCVC());
+    }
+    public static CardInfo getCardWithEmptyOwnerValue() {
+        return new CardInfo(validCard, getValidMonth(),  getValidYear(), null, getCVC());
+    }
 
     public static CardInfo getCardWithZeroMonthValue() {
         return new CardInfo(validCard, getZeroMonthValue(), getValidYear(), getOwner(), getCVC());
@@ -130,7 +127,9 @@ public class DataMaker {
     public static CardInfo getCardWithIncompleteCVC() {
         return new CardInfo(validCard, getValidMonth(), getValidYear(), getOwner(), getNumbers());
     }
-
+    public static CardInfo getCardWithEmptyCVC() {
+        return new CardInfo(validCard, getValidMonth(), getValidYear(), getOwner(), null);
+    }
     @Value
     public static class CardInfo {
         String numberCard;
