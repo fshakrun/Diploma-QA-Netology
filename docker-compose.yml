@@ -13,9 +13,9 @@ services:
       - '3306:3306'
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=base_mysql
-      - MYSQL_USER=postgres
-      - MYSQL_PASSWORD=630287
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
 
   postgresql:
     image: postgres:12-alpine
@@ -24,6 +24,7 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgres
     environment:
-      - POSTGRES_DB=base_postgresql
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=630287
+      - POSTGRES_RANDOM_ROOT_PASSWORD=yes
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass

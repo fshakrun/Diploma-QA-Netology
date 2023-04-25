@@ -1,24 +1,22 @@
 package ru.netology.test;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
-import lombok.SneakyThrows;
 import lombok.val;
 import org.junit.jupiter.api.*;
 import ru.netology.data.DataMaker;
 import ru.netology.pages.BookingPage;
-
-import java.util.concurrent.TimeUnit;
+import ru.netology.pages.MainPage;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.netology.data.DataMaker.*;
 import static ru.netology.data.DataHelper.*;
-import static ru.netology.data.DataHelper.getBookingInfo;
+import static ru.netology.data.DataMaker.*;
 
 public class BookingTourTest {
+
+    MainPage mainPage = new MainPage();
 
     BookingPage bookingPage = new BookingPage();
 
@@ -43,15 +41,14 @@ public class BookingTourTest {
     public class ValidCard {
 
         @Test
-        @SneakyThrows
         @DisplayName("1.Оплата картой")
         public void shouldBookValidCard() {
             var bookingPage = new BookingPage();
-            bookingPage.cardPayment();
+            mainPage.cardPayment();
             var info = getApprovedCard();
             bookingPage.sendingData(info);
             //Время отправки данных в БД:
-            TimeUnit.SECONDS.sleep(15);
+//            TimeUnit.SECONDS.sleep(15);
             var expected = "APPROVED";
             var paymentInfo = getBookingInfo();
             var orderInfo = getOrderInfo();
@@ -69,15 +66,14 @@ public class BookingTourTest {
         public class InvalidCard {
 
             @Test
-            @SneakyThrows
             @DisplayName("2.3 Невалидный (полный номер) номер карты(покупка).")
             public void shouldDeclineInvalidCard() {
                 var bookingPage = new BookingPage();
-                bookingPage.cardPayment();
+                mainPage.cardPayment();
                 var info = getDeclinedCard();
                 bookingPage.sendingData(info);
                 //Время отправки данных в БД:
-                TimeUnit.SECONDS.sleep(10);
+//                TimeUnit.SECONDS.sleep(10);
                 var expected = "DECLINED";
                 var paymentInfo = getBookingInfo();
                 var orderInfo = getOrderInfo();
@@ -98,19 +94,20 @@ public class BookingTourTest {
             @BeforeEach
             public void setPayment() {
                 var bookingPage = new BookingPage();
-                bookingPage.cardPayment();
+                mainPage.cardPayment();
             }
 
             @Test
             @DisplayName("1. Незаполенная данными форма")
             public void shouldCheckVoid() {
                 var bookingPage = new BookingPage();
-                val emptyForm = DataMaker.getEmptyCardInfo();
-                bookingPage.cardNumberFieldError.shouldBe(visible);
-                bookingPage.monthFieldError.shouldBe(visible);
-                bookingPage.yearFieldError.shouldBe(visible);
-                bookingPage.ownerFieldError.shouldBe(visible);
-                bookingPage.cvcFieldError.shouldBe(visible);
+                var emptyForm = DataMaker.getEmptyCardInfo();
+                bookingPage.sendingData(emptyForm);
+                bookingPage.notificationErrorNum();
+                bookingPage.notificationInvalidMonthValue();
+                bookingPage.notificationInvalidYearValue();
+                bookingPage.notificationMandatoryOwnerField();
+                bookingPage.notificationIvalidCvcValue();
             }
 
             @Test
@@ -119,15 +116,16 @@ public class BookingTourTest {
                 var bookingPage = new BookingPage();
                 var info = getEmptyCardNumber();
                 bookingPage.sendingData(info);
-                bookingPage.cardNumberFieldErrorHidden();
+                bookingPage.notificationErrorNum();
             }
 
             @Test
             @DisplayName("2.2 Невалидный (неполный номер) номер карты")
             public void shouldCheckIncompleteNumber() {
                 var bookingPage = new BookingPage();
-                var emptyNumber = getCardWithIncompleteCardNumber();
-                bookingPage.invalidCardNumberField(emptyNumber);
+                var info = getCardWithIncompleteCardNumber();
+                bookingPage.sendingData(info);
+                bookingPage.notificationErrorNum();
             }
 
             @Test
@@ -135,7 +133,8 @@ public class BookingTourTest {
             public void shouldCheckVoidMonth() {
                 var bookingPage = new BookingPage();
                 var emptyMonth = getCardWithEmptyMonthValue();
-                bookingPage.monthFieldErrorHidden();
+                bookingPage.sendingData(emptyMonth);
+                bookingPage.notificationInvalidMonthValue();
             }
 
             @Test
@@ -143,7 +142,8 @@ public class BookingTourTest {
             public void shouldCheckZeroMonth() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithZeroMonthValue();
-                bookingPage.invalidMonthField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationInvalidMonth();
             }
 
             @Test
@@ -151,7 +151,8 @@ public class BookingTourTest {
             public void shouldCheckThirteenMonth() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithThirteenMonth();
-                bookingPage.invalidMonthField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationInvalidMonth();
             }
 
             @Test
@@ -159,7 +160,8 @@ public class BookingTourTest {
             public void shouldCheckVoidYear() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithEmptyYearValue();
-                bookingPage.yearFieldErrorHidden();
+                bookingPage.sendingData(info);
+                bookingPage.notificationInvalidYearValue();
             }
 
             @Test
@@ -167,7 +169,8 @@ public class BookingTourTest {
             public void shouldCheckPastYear() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithPastYear();
-                bookingPage.invalidYearField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationExpiredYearField();
             }
 
             @Test
@@ -175,7 +178,8 @@ public class BookingTourTest {
             public void shouldCheckTenYears() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithTenYearsAfter();
-                bookingPage.invalidYearField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationInvalidYear();
             }
 
             @Test
@@ -183,7 +187,8 @@ public class BookingTourTest {
             public void shouldCheckVoidOwner() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithEmptyOwnerValue();
-                bookingPage.ownerFieldErrorHidden();
+                bookingPage.sendingData(info);
+                bookingPage.notificationMandatoryOwnerField();
             }
 
             @Test
@@ -191,7 +196,8 @@ public class BookingTourTest {
             public void shouldCheckSpecialSymbolsOwner() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithSpecialSymbolsOwner();
-                bookingPage.invalidOwnerField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationMandatoryOwnerField();
             }
 
             @Test
@@ -199,7 +205,8 @@ public class BookingTourTest {
             public void shouldCheckDigitsOwner() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithNumbersOwner();
-                bookingPage.invalidOwnerField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationMandatoryOwnerField();
             }
 
             @Test
@@ -207,7 +214,8 @@ public class BookingTourTest {
             public void shouldCheckVoidCVC() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithEmptyCVC();
-                bookingPage.cvcFieldErrorHidden();
+                bookingPage.sendingData(info);
+                bookingPage.notificationIvalidCvcValue();
             }
 
             @Test
@@ -215,7 +223,8 @@ public class BookingTourTest {
             public void shouldCheckIncompleteCVC() {
                 var bookingPage = new BookingPage();
                 var info = getCardWithIncompleteCVC();
-                bookingPage.invalidCVCField(info);
+                bookingPage.sendingData(info);
+                bookingPage.notificationIvalidCvcValue();
             }
         }
     }

@@ -30,15 +30,15 @@
 
 4. В терминале IntelliJ IDEA выполнить команду для запуска приложения, в зависимости от предпочитаемой СУБД:
 
-**MySQL:** ```java -jar artifacts\aqa-shop.jar --spring.datasource.url=jdbc:mysql://localhost:3306/postgres```
+**MySQL:** ```java -jar ./artifacts/aqa-shop.jar -- spring.datasource.url=jdbc:mysql://localhost:3306/app```
 
-**Postgres:** ```java -jar artifacts\aqa-shop.jar --spring.datasource.url=jdbc:postgresql://localhost:5432/postgres```
+**Postgres:** ```java -jar ./artifacts/aqa-shop.jar --spring.datasource.url=jdbc:postgresql://localhost:5432/app```
 
 5. В терминале IntelliJ IDEA выполнить команду для запуска автотестов, в зависимости от предпочитаемой СУБД:
 
-**MySQL:** ```.\gradlew clean test -DdbUrl=jdbc:mysql://localhost:3306/postgres -DdbUser=postgres -DdbPass=630287```
+**MySQL:** ```./gradlew clean test -Durl=jdbc:mysql://localhost:3306/app"```
 
-**Postgres:** ```.\gradlew clean test -DdbUrl=jdbc:postgresql://localhost:5432/postgres -DdbUser=postgres -DdbPass=630287```
+**Postgres:** ```./gradlew clean test -Durl=jdbc:postgresql://localhost:5432/app```
 
 
 6. В терминале IntelliJ IDEA для получения отчета Allure выполнить команду: ```.\gradlew allureServe```

@@ -2,13 +2,11 @@ package ru.netology.test;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
-import lombok.SneakyThrows;
 import lombok.val;
 import org.junit.jupiter.api.*;
 import ru.netology.data.DataMaker;
 import ru.netology.pages.BookingPage;
-
-import java.util.concurrent.TimeUnit;
+import ru.netology.pages.MainPage;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.open;
@@ -17,6 +15,8 @@ import static ru.netology.data.DataHelper.*;
 import static ru.netology.data.DataMaker.*;
 
 public class CreditFormTest {
+
+    MainPage mainPage = new MainPage();
 
     BookingPage bookingPage = new BookingPage();
 
@@ -41,15 +41,14 @@ public class CreditFormTest {
     public class ValidCreditCard {
 
         @Test
-        @SneakyThrows
         @DisplayName("2. Покупка в кредит")
         public void shouldGetCreditValidCard() {
             var bookingPage = new BookingPage();
-            bookingPage.cardCredit();
+            mainPage.cardCredit();
             var info = getApprovedCard();
             bookingPage.sendingData(info);
             //Время отправки данных в БД:
-            TimeUnit.SECONDS.sleep(15);
+//            TimeUnit.SECONDS.sleep(15);
             var expected = "APPROVED";
             var creditRequestInfo = getCreditRequestInfo();
             var orderInfo = getOrderInfo();
@@ -62,15 +61,14 @@ public class CreditFormTest {
         }
 
         @Test
-        @SneakyThrows
         @DisplayName("Невалидный (полный номер) номер карты (получение кредита).")
         public void shouldNoCreditInvalidCard() {
             var bookingPage = new BookingPage();
-            bookingPage.cardCredit();
+            mainPage.cardCredit();
             var info = getDeclinedCard();
             bookingPage.sendingData(info);
             //Время отправки данных в БД:
-            TimeUnit.SECONDS.sleep(15);
+//            TimeUnit.SECONDS.sleep(15);
             var expected = "DECLINED";
             var creditRequestInfo = getCreditRequestInfo();
             var orderInfo = getOrderInfo();
@@ -91,7 +89,7 @@ public class CreditFormTest {
         @BeforeEach
         public void setCredit() {
             var bookingPage = new BookingPage();
-            bookingPage.cardCredit();
+            mainPage.cardCredit();
         }
 
         @Test
@@ -100,11 +98,11 @@ public class CreditFormTest {
             var bookingPage = new BookingPage();
             val emptyForm = DataMaker.getEmptyCardInfo();
             bookingPage.sendingData(emptyForm);
-            bookingPage.cardNumberFieldError.shouldBe(visible);
-            bookingPage.monthFieldError.shouldBe(visible);
-            bookingPage.yearFieldError.shouldBe(visible);
-            bookingPage.ownerFieldError.shouldBe(visible);
-            bookingPage.cvcFieldError.shouldBe(visible);
+            bookingPage.notificationErrorNum();
+            bookingPage.notificationInvalidMonthValue();
+            bookingPage.notificationInvalidYearValue();
+            bookingPage.notificationMandatoryOwnerField();
+            bookingPage.notificationIvalidCvcValue();
         }
 
         @Test
@@ -113,7 +111,7 @@ public class CreditFormTest {
             var bookingPage = new BookingPage();
             var info = getEmptyCardNumber();
             bookingPage.sendingData(info);
-            bookingPage.cardNumberFieldErrorHidden();
+            bookingPage.notificationErrorNum();
         }
 
         @Test
@@ -121,15 +119,17 @@ public class CreditFormTest {
         public void shouldCheckIncompleteNumber() {
             var bookingPage = new BookingPage();
             var info = getCardWithIncompleteCardNumber();
-            bookingPage.invalidCardNumberField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationErrorNum();
         }
 
         @Test
         @DisplayName("Поле 'Месяц' остается пустым")
         public void shouldCheckVoidMonth() {
             var bookingPage = new BookingPage();
-            var info = getCardWithEmptyMonthValue();
-            bookingPage.monthFieldErrorHidden();
+            var emptyMonth = getCardWithEmptyMonthValue();
+            bookingPage.sendingData(emptyMonth);
+            bookingPage.notificationInvalidMonthValue();
         }
 
 
@@ -138,7 +138,8 @@ public class CreditFormTest {
         public void shouldCheckZeroMonth() {
             var bookingPage = new BookingPage();
             var info = getCardWithZeroMonthValue();
-            bookingPage.invalidMonthField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationInvalidMonth();
         }
 
         @Test
@@ -146,7 +147,8 @@ public class CreditFormTest {
         public void shouldCheckThirteenMonth() {
             var bookingPage = new BookingPage();
             var info = getCardWithThirteenMonth();
-            bookingPage.invalidMonthField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationInvalidMonth();
         }
 
         @Test
@@ -154,7 +156,8 @@ public class CreditFormTest {
         public void shouldCheckVoidYear() {
             var bookingPage = new BookingPage();
             var info = getCardWithEmptyYearValue();
-            bookingPage.yearFieldErrorHidden();
+            bookingPage.sendingData(info);
+            bookingPage.notificationInvalidYearValue();
         }
 
         @Test
@@ -162,7 +165,8 @@ public class CreditFormTest {
         public void shouldCheckPastYear() {
             var bookingPage = new BookingPage();
             var info = getCardWithPastYear();
-            bookingPage.invalidYearField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationExpiredYearField();
         }
 
         @Test
@@ -170,7 +174,8 @@ public class CreditFormTest {
         public void shouldCheckTenYears() {
             var bookingPage = new BookingPage();
             var info = getCardWithTenYearsAfter();
-            bookingPage.invalidYearField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationInvalidYear();
         }
 
         @Test
@@ -178,7 +183,8 @@ public class CreditFormTest {
         public void shouldCheckVoidOwner() {
             var bookingPage = new BookingPage();
             var info = getCardWithEmptyOwnerValue();
-            bookingPage.ownerFieldErrorHidden();
+            bookingPage.sendingData(info);
+            bookingPage.notificationMandatoryOwnerField();
         }
 
 
@@ -187,7 +193,8 @@ public class CreditFormTest {
         public void shouldCheckSpecialSymbolsOwner() {
             var bookingPage = new BookingPage();
             var info = getCardWithSpecialSymbolsOwner();
-            bookingPage.invalidOwnerField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationMandatoryOwnerField();
         }
 
         @Test
@@ -195,7 +202,8 @@ public class CreditFormTest {
         public void shouldCheckDigitsOwner() {
             var bookingPage = new BookingPage();
             var info = getCardWithNumbersOwner();
-            bookingPage.invalidOwnerField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationMandatoryOwnerField();
         }
 
         @Test
@@ -203,7 +211,8 @@ public class CreditFormTest {
         public void shouldCheckVoidCVC() {
             var bookingPage = new BookingPage();
             var info = getCardWithEmptyCVC();
-            bookingPage.cvcFieldErrorHidden();
+            bookingPage.sendingData(info);
+            bookingPage.notificationIvalidCvcValue();
         }
 
         @Test
@@ -211,7 +220,8 @@ public class CreditFormTest {
         public void shouldCheckIncompleteCVC() {
             var bookingPage = new BookingPage();
             var info = getCardWithIncompleteCVC();
-            bookingPage.invalidCVCField(info);
+            bookingPage.sendingData(info);
+            bookingPage.notificationIvalidCvcValue();
         }
     }
 }
