@@ -16,7 +16,7 @@ public class DataHelper {
     @SneakyThrows
     public static void initConnection() {
         runner = new QueryRunner();
-        connection = DriverManager.getConnection(System.getProperty("url"), ("user"), ("password"));
+        connection = DriverManager.getConnection(System.getProperty("url"), System.getProperty("user"), System.getProperty("password"));
     }
 
 

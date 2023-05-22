@@ -43,7 +43,11 @@ test {
     testLogging.showStandardStreams = true
     systemProperty 'selenide.headless', System.getProperty('selenide.headless')
     systemProperty 'url', System.getProperty('url')
-    systemProperty 'user', System.getProperty('user', 'app')
-    systemProperty 'password', System.getProperty('password', 'pass')
+    //Для работы по умолчанию с Postgres нужно добавить адрес следующим образом
+//    systemProperty 'url', System.getProperty('url','jdbc:postgresql://localhost:5432/app')
+    //Для работы по умолчанию с MySQL нужно добавить адрес следующим образом
+//    systemProperty 'url', System.getProperty('url','jdbc:mysql://localhost:3306/app')
+    systemProperty 'user', System.getProperty('user','app')
+    systemProperty 'password', System.getProperty('password','pass')
     systemProperty 'sut.url', System.getProperty('sut.url', 'http://localhost:8080')
 }
