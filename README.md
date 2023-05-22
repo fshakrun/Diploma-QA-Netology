@@ -36,7 +36,7 @@
 
 5. В терминале IntelliJ IDEA выполнить команду для запуска автотестов, в зависимости от предпочитаемой СУБД:
 
-**MySQL:** ```./gradlew clean test -Durl=jdbc:mysql://localhost:3306/app"```
+**MySQL:** ```./gradlew clean test -Durl=jdbc:mysql://localhost:3306/app```
 
 **Postgres:** ```./gradlew clean test -Durl=jdbc:postgresql://localhost:5432/app```
 
